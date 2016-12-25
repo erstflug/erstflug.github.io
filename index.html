@@ -34,7 +34,6 @@
 </style>
 <canvas id="mycanvas" class="canvas"></canvas>
 <script src="https://rawgit.com/processing-js/processing-js/v1.4.8/processing.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
 <script type="text/processing" data-processing-target="mycanvas">
 
 /* 
@@ -85,8 +84,8 @@ color currentcolor;
 void setup() 
 {
   size(window.innerWidth, window.innerHeight);
-  SCREEN_X = $(window).width();
-  SCREEN_Y = $(window).height();
+  SCREEN_X = 500; //$(window).width();
+  SCREEN_Y = 500; //$(window).height();
   smooth();
 
   helicopter_image = loadImage("https://raw.githubusercontent.com/erstflug/erstflug.github.io/master/helicopter.png");
