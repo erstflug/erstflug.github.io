@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HELICOPTER GAME</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+
+<style>
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.canvas {
+ outline: 0px;
+ position: relative;
+ left: 0px;
+ top: 0px;
+ width: 100%;
+ height: 100%;
+}
+
+
+</style>
+<canvas id="mycanvas" class="canvas"></canvas>
+<script src="https://rawgit.com/processing-js/processing-js/v1.4.8/processing.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
+<script type="text/processing" data-processing-target="mycanvas">
+
+<script>
+/* 
+ HELICOPTERGAME 
+ VERSION 0.5
+ COPYRIGHT (C) LFRA
+ */
+
+PImage helicopter_image;
+PImage boom;
+PImage mauer; 
+
+
+int red = 10;
+int blue = 100;
+int green = 10;
+int value = 0;
+
+int helicopter_size_width = 70;
+int helicopter_size_height = 50;
+
+float distance = 0.0;
+
+int helicopter_height = 300;
+int helicopter_width = 300;
+
+String game_over = "GAME OVER, LOSER";
+
+int SCREEN_X; 
+int SCREEN_Y;
+
+int KLOTZ_X = 1300;
+int KLOTZ_Y = (int)random(0, SCREEN_Y-50);
+
+int KLOTZ_SIZE_X = 50;
+int KLOTZ_SIZE_Y = (int)random(100, 250);
+
+long ITERATION = 0;
+
+CircleButton up;
+CircleButton down;
+
+color currentcolor;
+
+
+
+
+void setup() 
+{
+  size(window.innerWidth, window.innerHeight);
+  SCREEN_X = $(window).width();
+  SCREEN_Y = $(window).height();
+  smooth();
+
+  helicopter_image = loadImage("helicopter.png");
+  boom = loadImage("explosion.jpg");
+  mauer = loadImage("mauer.jpg");
+
+  color baseColor = color(102);
+  currentcolor = baseColor;
+
+  
+  //ellipseMode(CENTER);
+  buttoncolor = color(100);
+  highlight = color(0); 
+
+  //background(red, green, blue);
+
+  up = new CircleButton(true, 5/6*SCREEN_X, 7/8*SCREEN_Y, 200, buttoncolor, highlight);
+  down = new CircleButton(false, 1/6*SCREEN_X, 7/8*SCREEN_Y, 200, buttoncolor, highlight);
+
+  frameRate(25);
+}
+
+
+
+void klotz(long speed) {
+  KLOTZ_X -= speed;
+  //mauer.resize(KLOTZ_SIZE_X, KLOTZ_SIZE_Y);
+  image(mauer, KLOTZ_X, KLOTZ_Y);
+  if (KLOTZ_X < - KLOTZ_SIZE_Y) {
+    KLOTZ_X = 1300;
+    KLOTZ_Y = (int)random(0, SCREEN_Y-50);
+    //KLOTZ_SIZE_Y = (int)random(100, 200);  
+  }
+}
+
+
+void BOOM() {
+  if (helicopter_height > KLOTZ_Y && helicopter_height < KLOTZ_Y + KLOTZ_SIZE_Y && 
+    helicopter_width > KLOTZ_X && helicopter_width < KLOTZ_X + KLOTZ_SIZE_X ||
+    helicopter_height > SCREEN_Y - 20 || helicopter_height < -20) {
+    red = 250;
+    green = 0;
+    blue = 0;
+    background(red, green, blue);
+    image(boom, helicopter_width, helicopter_height-80);
+    textSize(100);
+    text(game_over, 0, SCREEN_Y/2);
+  	noLoop();
+  }
+}
+
+
+void draw() 
+{ 
+
+  distance += 0.5;
+  background(currentcolor);
+  stroke(255);
+
+  image(helicopter_image, helicopter_width, helicopter_height);
+  textSize(35);
+  fill(0);
+  text("DISTANCE:  " + (int)distance, 2/3*SCREEN_X, 1/8*SCREEN_Y);
+
+  up.update(true);
+  down.update(false);
+  up.display();
+  down.display();
+
+  klotz(15+(int)(ITERATION/50));
+  ellipse(KLOTZ_X, KLOTZ_Y, 10, 10);
+  ellipse(KLOTZ_X+KLOTZ_SIZE_X, KLOTZ_Y+KLOTZ_SIZE_Y, 10, 10);
+  //fill(250, 210, 210);
+  //ellipse(helicopter_width, helicopter_height, 30, 30);
+  BOOM();
+
+  ITERATION++;
+
+}
+
+///////////
+
+///////////
+
+
+class CircleButton
+{ 
+
+  int x, y;
+  int size;
+
+  color basecolor, highlightcolor;
+  color currentcolor;
+
+  boolean mode;  
+
+  CircleButton(boolean m, int ix, int iy, int isize, color icolor, color ihighlight) 
+  {
+    x = ix;
+    y = iy;
+    mode = m;
+    size = isize;
+    basecolor = icolor;
+    highlightcolor = ihighlight;
+    currentcolor = basecolor;
+  }
+
+ boolean overCircle(int x, int y, int diameter) 
+ {
+    float disX = x - mouseX;
+    float disY = y - mouseY;
+    if(sqrt(sq(disX) + sq(disY)) < diameter/2) {
+      over_ = true
+      return true;
+    } 
+    else {
+      over_ = false;
+      return false;
+    }
+  }
+
+  void update() 
+  {
+    if(overCircle(x,y,size)){
+      currentcolor = highlightcolor;
+     if (mode){
+        helicopter_height -= 15;
+     }else{
+      currentcolor = basecolor;
+      helicopter_height += 15;
+   }
+  }
+}
+
+
+  void display() 
+  {
+    stroke(255);
+    fill(currentcolor);
+    ellipse(x, y, size, size);
+  }
+
+}
+
+
+</script>
+
+
+
+<input type="button" class="button" value="RESTART" onClick="window.location.reload()">
+
+
+
+</body>
+</html>
