@@ -84,8 +84,8 @@ color currentcolor;
 void setup() 
 {
   size(window.innerWidth, window.innerHeight);
-  SCREEN_X = 500; //$(window).width();
-  SCREEN_Y = 500; //$(window).height();
+  SCREEN_X = window.innerWidth; //$(window).width();
+  SCREEN_Y = window.innerHeight; //$(window).height();
   smooth();
 
   helicopter_image = loadImage("https://raw.githubusercontent.com/erstflug/erstflug.github.io/master/helicopter.png");
